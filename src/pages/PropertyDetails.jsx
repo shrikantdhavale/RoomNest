@@ -12,6 +12,8 @@ function PropertyDetails() {
 
     const [property, setProperty] = useState(null);
     const [images, setImages] = useState([]);
+    const [ownerProfile, setOwnerProfile] = useState(null);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -27,26 +29,25 @@ function PropertyDetails() {
         try {
             setLoading(true);
             setError("");
+            setProperty(null);
             setImages([]);
+            setOwnerProfile(null);
 
             // =====================================
             // DEMO PROPERTY
             // =====================================
 
             if (!String(id).startsWith("db-")) {
-
                 const allProperties = [
                     ...properties,
                     ...pgProperties,
                     ...hostelProperties,
                 ];
 
-                const demoProperty =
-                    allProperties.find(
-                        (item) =>
-                            String(item.id) ===
-                            String(id)
-                    );
+                const demoProperty = allProperties.find(
+                    (item) =>
+                        String(item.id) === String(id)
+                );
 
                 if (!demoProperty) {
                     throw new Error(
@@ -56,8 +57,6 @@ function PropertyDetails() {
 
                 setProperty(demoProperty);
 
-                // Demo properties use their
-                // existing image
                 setImages(
                     demoProperty.image
                         ? [demoProperty.image]
@@ -71,11 +70,10 @@ function PropertyDetails() {
             // SUPABASE PROPERTY
             // =====================================
 
-            const databaseId =
-                String(id).replace(
-                    "db-",
-                    ""
-                );
+            const databaseId = String(id).replace(
+                "db-",
+                ""
+            );
 
             const {
                 data,
@@ -120,9 +118,38 @@ function PropertyDetails() {
 
             const uploadedImages =
                 (imageData || []).map(
-                    (image) =>
-                        image.image_url
+                    (image) => image.image_url
                 );
+
+            // =====================================
+            // GET OWNER / BROKER CONTACT
+            // =====================================
+
+            if (data.owner_id) {
+                const {
+                    data: profileData,
+                    error: profileError,
+                } = await supabase.rpc(
+                    "get_property_contact",
+                    {
+                        property_id_input: data.id,
+                    }
+                );
+
+                if (profileError) {
+                    console.error(
+                        "Owner contact error:",
+                        profileError
+                    );
+                } else if (
+                    profileData &&
+                    profileData.length > 0
+                ) {
+                    setOwnerProfile(
+                        profileData[0]
+                    );
+                }
+            }
 
             // =====================================
             // PROPERTY OBJECT
@@ -190,7 +217,6 @@ function PropertyDetails() {
             );
 
         } catch (error) {
-
             console.error(
                 "Property loading error:",
                 error
@@ -200,12 +226,10 @@ function PropertyDetails() {
                 error.message ||
                 "Unable to load property."
             );
-
         } finally {
             setLoading(false);
         }
     };
-
 
     // =========================================
     // LOADING
@@ -214,9 +238,7 @@ function PropertyDetails() {
     if (loading) {
         return (
             <main className="property-details-page">
-
                 <div className="property-details-container">
-
                     <div className="property-not-found">
 
                         <div className="not-found-icon">
@@ -233,13 +255,10 @@ function PropertyDetails() {
                         </p>
 
                     </div>
-
                 </div>
-
             </main>
         );
     }
-
 
     // =========================================
     // NOT FOUND
@@ -248,7 +267,6 @@ function PropertyDetails() {
     if (!property) {
         return (
             <main className="property-details-page">
-
                 <div className="property-details-container">
 
                     <div className="property-not-found">
@@ -273,11 +291,9 @@ function PropertyDetails() {
                     </div>
 
                 </div>
-
             </main>
         );
     }
-
 
     // =========================================
     // IMAGE FALLBACK
@@ -290,13 +306,81 @@ function PropertyDetails() {
                 "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80",
             ];
 
+    // =========================================
+    // OWNER CONTACT
+    // =========================================
+
+    const ownerName =
+        ownerProfile?.full_name ||
+        "Property Owner";
+
+    const ownerRole =
+        ownerProfile?.role === "broker"
+            ? "Broker"
+            : "Property Owner";
+
+    const ownerPhone =
+        ownerProfile?.phone || "";
+
+    // =========================================
+    // NORMALIZE PHONE NUMBER
+    // =========================================
+
+    const normalizePhone = (phone) => {
+        const digits = (phone || "").replace(
+            /\D/g,
+            ""
+        );
+
+        if (!digits) {
+            return "";
+        }
+
+        // Indian 10-digit mobile number
+        // Example: 9876543210
+        // Becomes: 919876543210
+        if (digits.length === 10) {
+            return `91${digits}`;
+        }
+
+        // Already contains India's country code
+        // Example: 919876543210
+        if (
+            digits.startsWith("91") &&
+            digits.length === 12
+        ) {
+            return digits;
+        }
+
+        // Return other valid formats as entered
+        return digits;
+    };
+
+    const whatsappPhone =
+        normalizePhone(ownerPhone);
+
+    // =========================================
+    // WHATSAPP MESSAGE
+    // =========================================
+
+    const whatsappMessage =
+        `Hello, I am interested in your ${property.type} listing "${property.title}" on RoomNest. Is it still available?`;
+
+    const whatsappUrl =
+        whatsappPhone
+            ? `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(
+                whatsappMessage
+            )}`
+            : "#";
 
     return (
         <main className="property-details-page">
 
             <div className="property-details-container">
 
-                {/* BACK */}
+                {/* =========================
+                    BACK
+                ========================= */}
 
                 <Link
                     to="/"
@@ -324,7 +408,6 @@ function PropertyDetails() {
                         </span>
 
                     </div>
-
 
                     <div className="gallery-side">
 
@@ -385,7 +468,9 @@ function PropertyDetails() {
                         </div>
 
 
-                        {/* PRICE */}
+                        {/* =========================
+                            PRICE
+                        ========================= */}
 
                         <div className="detail-price-box">
 
@@ -405,7 +490,6 @@ function PropertyDetails() {
                                 </small>
 
                             </div>
-
 
                             <div className="detail-vacancy">
 
@@ -430,7 +514,9 @@ function PropertyDetails() {
                         </div>
 
 
-                        {/* DETAILS */}
+                        {/* =========================
+                            DETAILS
+                        ========================= */}
 
                         <div className="property-info-section">
 
@@ -454,7 +540,6 @@ function PropertyDetails() {
 
 
                                 {property.roomType && (
-
                                     <div className="detail-item">
 
                                         <span>
@@ -466,13 +551,11 @@ function PropertyDetails() {
                                         </strong>
 
                                     </div>
-
                                 )}
 
 
                                 {property.furnished !==
                                     undefined && (
-
                                     <div className="detail-item">
 
                                         <span>
@@ -486,12 +569,10 @@ function PropertyDetails() {
                                         </strong>
 
                                     </div>
-
                                 )}
 
 
                                 {property.gender && (
-
                                     <div className="detail-item">
 
                                         <span>
@@ -503,12 +584,10 @@ function PropertyDetails() {
                                         </strong>
 
                                     </div>
-
                                 )}
 
 
                                 {property.sharing && (
-
                                     <div className="detail-item">
 
                                         <span>
@@ -520,13 +599,11 @@ function PropertyDetails() {
                                         </strong>
 
                                     </div>
-
                                 )}
 
 
                                 {property.ac !==
                                     undefined && (
-
                                     <div className="detail-item">
 
                                         <span>
@@ -540,7 +617,6 @@ function PropertyDetails() {
                                         </strong>
 
                                     </div>
-
                                 )}
 
                             </div>
@@ -548,7 +624,9 @@ function PropertyDetails() {
                         </div>
 
 
-                        {/* AMENITIES */}
+                        {/* =========================
+                            AMENITIES
+                        ========================= */}
 
                         <div className="property-info-section">
 
@@ -560,7 +638,6 @@ function PropertyDetails() {
 
                                 {property.tags.map(
                                     (tag, index) => (
-
                                         <div
                                             className="amenity"
                                             key={index}
@@ -573,7 +650,6 @@ function PropertyDetails() {
                                             {tag}
 
                                         </div>
-
                                     )
                                 )}
 
@@ -582,7 +658,9 @@ function PropertyDetails() {
                         </div>
 
 
-                        {/* DESCRIPTION */}
+                        {/* =========================
+                            DESCRIPTION
+                        ========================= */}
 
                         <div className="property-info-section">
 
@@ -613,15 +691,20 @@ function PropertyDetails() {
                         </span>
 
                         <h2>
-                            Contact the Owner
+                            Contact the {ownerRole}
                         </h2>
 
                         <p>
-                            Get in touch with the owner
-                            or property manager to check
-                            availability and schedule a visit.
+                            Get in touch with the{" "}
+                            {ownerRole.toLowerCase()}{" "}
+                            to check availability
+                            and schedule a visit.
                         </p>
 
+
+                        {/* =========================
+                            OWNER INFO
+                        ========================= */}
 
                         <div className="owner-info">
 
@@ -632,7 +715,7 @@ function PropertyDetails() {
                             <div>
 
                                 <strong>
-                                    Property Owner
+                                    {ownerName}
                                 </strong>
 
                                 <span>
@@ -644,27 +727,63 @@ function PropertyDetails() {
                         </div>
 
 
+                        {/* =========================
+                            CONTACT BUTTONS
+                        ========================= */}
+
                         <div className="contact-buttons">
 
-                            <a
-                                href="tel:+919000000001"
-                                className="call-button"
-                            >
-                                📞 Call Owner
-                            </a>
+                            {whatsappPhone ? (
+
+                                <a
+                                    href={`tel:+${whatsappPhone}`}
+                                    className="call-button"
+                                >
+                                    📞 Call {ownerRole}
+                                </a>
+
+                            ) : (
+
+                                <button
+                                    type="button"
+                                    className="call-button"
+                                    disabled
+                                >
+                                    📞 Phone Not Available
+                                </button>
+
+                            )}
 
 
-                            <a
-                                href="https://wa.me/919000000001"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="whatsapp-button"
-                            >
-                                💬 WhatsApp
-                            </a>
+                            {whatsappPhone ? (
+
+                                <a
+                                    href={whatsappUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="whatsapp-button"
+                                >
+                                    💬 WhatsApp
+                                </a>
+
+                            ) : (
+
+                                <button
+                                    type="button"
+                                    className="whatsapp-button"
+                                    disabled
+                                >
+                                    💬 WhatsApp Not Available
+                                </button>
+
+                            )}
 
                         </div>
 
+
+                        {/* =========================
+                            WARNING
+                        ========================= */}
 
                         <div className="contact-warning">
 
