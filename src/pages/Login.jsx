@@ -44,7 +44,6 @@ function Login() {
                 throw new Error("Unable to login.");
             }
 
-
             // =====================================
             // GET PROFILE
             // =====================================
@@ -64,8 +63,10 @@ function Login() {
                 );
             }
 
-            console.log("Logged in profile:", profile);
-
+            console.log(
+                "Logged in profile:",
+                profile
+            );
 
             // =====================================
             // REDIRECT BASED ON ROLE
@@ -77,13 +78,14 @@ function Login() {
             ) {
                 navigate("/owner-dashboard");
             } else {
-                // Normal users can browse without a dashboard
                 navigate("/");
             }
 
         } catch (error) {
-
-            console.error("Login error:", error);
+            console.error(
+                "Login error:",
+                error
+            );
 
             setError(
                 error.message ||
@@ -95,7 +97,6 @@ function Login() {
         }
     };
 
-
     return (
         <main className="auth-page">
 
@@ -103,13 +104,24 @@ function Login() {
 
                 <div className="auth-card">
 
-                    {/* HEADER */}
+                    {/* =================================
+                        HEADER
+                    ================================= */}
 
                     <div className="auth-header">
 
-                        <div className="auth-logo">
-                            RoomNest
+                        {/* ROOMNEST LOGO */}
+
+                        <div className="auth-brand">
+
+                            <div className="auth-brand-icon">
+                                RN
+                            </div>
+
+                        
+
                         </div>
+
 
                         <h1>
                             Welcome Back
@@ -122,7 +134,9 @@ function Login() {
                     </div>
 
 
-                    {/* ERROR */}
+                    {/* =================================
+                        ERROR
+                    ================================= */}
 
                     {error && (
                         <div className="auth-error">
@@ -131,7 +145,9 @@ function Login() {
                     )}
 
 
-                    {/* FORM */}
+                    {/* =================================
+                        FORM
+                    ================================= */}
 
                     <form
                         className="auth-form"
@@ -151,7 +167,9 @@ function Login() {
                                 placeholder="Enter your email"
                                 value={email}
                                 onChange={(e) =>
-                                    setEmail(e.target.value)
+                                    setEmail(
+                                        e.target.value
+                                    )
                                 }
                             />
 
@@ -171,7 +189,9 @@ function Login() {
                                 placeholder="Enter your password"
                                 value={password}
                                 onChange={(e) =>
-                                    setPassword(e.target.value)
+                                    setPassword(
+                                        e.target.value
+                                    )
                                 }
                             />
 
@@ -193,7 +213,9 @@ function Login() {
                     </form>
 
 
-                    {/* REGISTER */}
+                    {/* =================================
+                        REGISTER
+                    ================================= */}
 
                     <div className="auth-switch">
 

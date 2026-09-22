@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function OwnerCTA() {
 
     return (
@@ -22,9 +24,12 @@ function OwnerCTA() {
                         rooms, PGs and hostels in Pune.
                     </p>
 
-                    <button className="owner-button">
-                        + List Your Property
-                    </button>
+                   <Link
+    to="/list-property"
+    className="owner-cta-button"
+>
+    + List Your Property
+</Link>
 
                 </div>
 

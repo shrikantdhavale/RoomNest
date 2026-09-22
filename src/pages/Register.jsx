@@ -16,8 +16,15 @@ function Register() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
+    // =========================================
+    // HANDLE INPUT
+    // =========================================
+
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {
+            name,
+            value,
+        } = e.target;
 
         setFormData((previous) => ({
             ...previous,
@@ -25,49 +32,63 @@ function Register() {
         }));
     };
 
+    // =========================================
+    // REGISTER
+    // =========================================
+
     const handleRegister = async (e) => {
         e.preventDefault();
 
         setError("");
 
         if (
-            !formData.name ||
-            !formData.email ||
-            !formData.phone ||
+            !formData.name.trim() ||
+            !formData.email.trim() ||
+            !formData.phone.trim() ||
             !formData.password
         ) {
-            setError("Please fill all fields.");
+            setError(
+                "Please fill all fields."
+            );
             return;
         }
 
-        if (formData.password.length < 6) {
-            setError("Password must be at least 6 characters.");
+        if (
+            formData.password.length < 6
+        ) {
+            setError(
+                "Password must be at least 6 characters."
+            );
             return;
         }
 
         try {
             setLoading(true);
 
-            /*
-             * Create Supabase Auth account.
-             *
-             * The extra information is stored in
-             * user metadata.
-             *
-             * Our Supabase database trigger will
-             * automatically create the profiles row.
-             */
+            // =====================================
+            // CREATE SUPABASE AUTH ACCOUNT
+            // =====================================
 
-            const { error: authError } =
+            const {
+                error: authError,
+            } =
                 await supabase.auth.signUp({
-                    email: formData.email,
-                    password: formData.password,
+                    email:
+                        formData.email.trim(),
+
+                    password:
+                        formData.password,
 
                     options: {
                         data: {
-                            full_name: formData.name,
-                            phone: formData.phone,
-                            role: formData.accountType,
+                            full_name:
+                                formData.name.trim(),
+
+                            phone:
+                                formData.phone.trim(),
+
+                            role:
+                                formData.accountType,
                         },
                     },
                 });
@@ -76,16 +97,23 @@ function Register() {
                 throw authError;
             }
 
-            alert("Account created successfully!");
+            alert(
+                "Account created successfully!"
+            );
 
             navigate("/login");
 
         } catch (error) {
-            console.error("Registration error:", error);
+            console.error(
+                "Registration error:",
+                error
+            );
 
             setError(
-                error.message || "Something went wrong. Please try again."
+                error.message ||
+                "Something went wrong. Please try again."
             );
+
         } finally {
             setLoading(false);
         }
@@ -98,25 +126,43 @@ function Register() {
 
                 <div className="auth-card">
 
-                    {/* HEADER */}
+                    {/* =================================
+                        HEADER
+                    ================================= */}
+
                     <div className="auth-header">
 
-                        <div className="auth-logo">
-                            RoomNest
+                        {/* ROOMNEST BRAND */}
+
+                        <div className="auth-brand">
+
+                            <div className="auth-brand-icon">
+                                RN
+                            </div>
+
+                            {/* <span className="auth-brand-name">
+                                RoomNest
+                            </span> */}
+
                         </div>
+
 
                         <h1>
                             Create your account
                         </h1>
 
                         <p>
-                            Find your perfect place or list your property.
+                            Find your perfect place or
+                            list your property.
                         </p>
 
                     </div>
 
 
-                    {/* ERROR */}
+                    {/* =================================
+                        ERROR
+                    ================================= */}
+
                     {error && (
                         <div className="auth-error">
                             {error}
@@ -124,13 +170,17 @@ function Register() {
                     )}
 
 
-                    {/* FORM */}
+                    {/* =================================
+                        FORM
+                    ================================= */}
+
                     <form
                         className="auth-form"
                         onSubmit={handleRegister}
                     >
 
                         {/* FULL NAME */}
+
                         <div className="form-group">
 
                             <label>
@@ -149,6 +199,7 @@ function Register() {
 
 
                         {/* EMAIL */}
+
                         <div className="form-group">
 
                             <label>
@@ -167,6 +218,7 @@ function Register() {
 
 
                         {/* PHONE */}
+
                         <div className="form-group">
 
                             <label>
@@ -185,6 +237,7 @@ function Register() {
 
 
                         {/* PASSWORD */}
+
                         <div className="form-group">
 
                             <label>
@@ -202,28 +255,39 @@ function Register() {
                         </div>
 
 
-                        {/* ACCOUNT TYPE */}
+                        {/* =================================
+                            ACCOUNT TYPE
+                        ================================= */}
+
                         <div className="form-group">
 
                             <label>
                                 Account Type
                             </label>
 
+
                             <div className="account-type-options">
 
                                 {/* USER */}
+
                                 <button
                                     type="button"
-                                    className={`account-type ${
-                                        formData.accountType === "user"
-                                            ? "active"
-                                            : ""
-                                    }`}
+                                    className={
+                                        `account-type ${
+                                            formData.accountType ===
+                                            "user"
+                                                ? "active"
+                                                : ""
+                                        }`
+                                    }
                                     onClick={() =>
-                                        setFormData((previous) => ({
-                                            ...previous,
-                                            accountType: "user",
-                                        }))
+                                        setFormData(
+                                            (previous) => ({
+                                                ...previous,
+                                                accountType:
+                                                    "user",
+                                            })
+                                        )
                                     }
                                 >
                                     👤 User
@@ -231,18 +295,25 @@ function Register() {
 
 
                                 {/* OWNER */}
+
                                 <button
                                     type="button"
-                                    className={`account-type ${
-                                        formData.accountType === "owner"
-                                            ? "active"
-                                            : ""
-                                    }`}
+                                    className={
+                                        `account-type ${
+                                            formData.accountType ===
+                                            "owner"
+                                                ? "active"
+                                                : ""
+                                        }`
+                                    }
                                     onClick={() =>
-                                        setFormData((previous) => ({
-                                            ...previous,
-                                            accountType: "owner",
-                                        }))
+                                        setFormData(
+                                            (previous) => ({
+                                                ...previous,
+                                                accountType:
+                                                    "owner",
+                                            })
+                                        )
                                     }
                                 >
                                     🏠 Owner
@@ -250,18 +321,25 @@ function Register() {
 
 
                                 {/* BROKER */}
+
                                 <button
                                     type="button"
-                                    className={`account-type ${
-                                        formData.accountType === "broker"
-                                            ? "active"
-                                            : ""
-                                    }`}
+                                    className={
+                                        `account-type ${
+                                            formData.accountType ===
+                                            "broker"
+                                                ? "active"
+                                                : ""
+                                        }`
+                                    }
                                     onClick={() =>
-                                        setFormData((previous) => ({
-                                            ...previous,
-                                            accountType: "broker",
-                                        }))
+                                        setFormData(
+                                            (previous) => ({
+                                                ...previous,
+                                                accountType:
+                                                    "broker",
+                                            })
+                                        )
                                     }
                                 >
                                     💼 Broker
@@ -272,7 +350,10 @@ function Register() {
                         </div>
 
 
-                        {/* SUBMIT */}
+                        {/* =================================
+                            SUBMIT
+                        ================================= */}
+
                         <button
                             type="submit"
                             className="auth-submit"
@@ -286,10 +367,13 @@ function Register() {
                     </form>
 
 
-                    {/* LOGIN LINK */}
+                    {/* =================================
+                        LOGIN LINK
+                    ================================= */}
+
                     <div className="auth-switch">
 
-                        Already have an account?
+                        Already have an account?{" "}
 
                         <Link to="/login">
                             Login
