@@ -8,6 +8,8 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [showPassword, setShowPassword] = useState(false);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -118,8 +120,6 @@ function Login() {
                                 RN
                             </div>
 
-                        
-
                         </div>
 
 
@@ -184,16 +184,43 @@ function Login() {
                                 Password
                             </label>
 
-                            <input
-                                type="password"
-                                placeholder="Enter your password"
-                                value={password}
-                                onChange={(e) =>
-                                    setPassword(
-                                        e.target.value
-                                    )
-                                }
-                            />
+                            <div className="password-input-wrapper">
+
+                                <input
+                                    type={
+                                        showPassword
+                                            ? "text"
+                                            : "password"
+                                    }
+                                    placeholder="Enter your password"
+                                    value={password}
+                                    onChange={(e) =>
+                                        setPassword(
+                                            e.target.value
+                                        )
+                                    }
+                                />
+
+                                <button
+                                    type="button"
+                                    className="password-toggle"
+                                    onClick={() =>
+                                        setShowPassword(
+                                            !showPassword
+                                        )
+                                    }
+                                    aria-label={
+                                        showPassword
+                                            ? "Hide password"
+                                            : "Show password"
+                                    }
+                                >
+                                    {showPassword
+                                        ? "🙈"
+                                        : "👁️"}
+                                </button>
+
+                            </div>
 
                         </div>
 

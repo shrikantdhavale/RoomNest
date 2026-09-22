@@ -4873,3 +4873,49 @@
     background: #f8fafc;
     transform: translateY(-2px);
 }
+
+/* =========================================
+   PASSWORD SHOW / HIDE
+========================================= */
+
+.password-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-input-wrapper input {
+    width: 100%;
+    padding-right: 50px;
+}
+
+.password-toggle {
+    position: absolute;
+
+    right: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    color: #64748b;
+}
+
+.password-toggle:hover {
+    background: transparent;
+    transform: translateY(-50%);
+}
