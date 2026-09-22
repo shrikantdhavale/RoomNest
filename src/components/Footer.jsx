@@ -8,7 +8,7 @@ function Footer() {
                 <div className="footer-brand">
 
                     <div className="footer-logo">
-                        ⌂ RoomNest
+                        🏠 RoomNest
                     </div>
 
                     <p>
@@ -49,11 +49,31 @@ function Footer() {
             <div className="footer-bottom">
 
                 <span>
-                    © 2026 RoomNest
-                </span>
+                <h3><a
+                    href="mailto:shrikantdhavale9517@gmail.com"
+                >
+                   Email: shrikantdhavale9517@gmail.com    
+                </a> 
 
+                </h3>
+                <h3>
+                     <a
+                    href="https://www.instagram.com/_shrikantpatil_/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                     Instagram
+                </a>
+
+
+
+                </h3>
+             </span>
+
+
+        
                 <span>
-                    Made for Pune 🏠
+                  <h3>  © 2026 RoomNest || Shrikant Dhavale</h3>
                 </span>
 
             </div>
