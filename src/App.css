@@ -635,6 +635,8 @@
     background: #f8fafc;
 
     transition: 0.3s;
+     text-decoration: none;
+    color: inherit;
 }
 
 .category-card:hover {

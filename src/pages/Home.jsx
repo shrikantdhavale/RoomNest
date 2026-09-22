@@ -35,25 +35,28 @@ function Home() {
                         <CategoryCard
                             icon="🏠"
                             title="Rooms"
-                            count="120+"
-                            description="Private and shared rooms for students and working professionals."
-                            className="rooms-card"
+                            description="Find rooms that fit your budget and lifestyle."
+                            count="120"
+                            className="rooms-category"
+                            link="/rooms"
                         />
 
                         <CategoryCard
-                            icon="🛏️"
+                            icon="🏢"
                             title="PGs"
-                            count="250+"
-                            description="Comfortable PG accommodations with flexible sharing options."
-                            className="pg-card"
+                            description="Comfortable PG accommodation for students and professionals."
+                            count="85"
+                            className="pg-category"
+                            link="/pg"
                         />
 
-                        <CategoryCard
-                            icon="🏨"
+                       <CategoryCard
+                            icon="🛏️"
                             title="Hostels"
-                            count="80+"
-                            description="Affordable hostels with essential facilities and security."
-                            className="hostel-card"
+                            description="Affordable hostel accommodation across Pune."
+                            count="60"
+                            className="hostel-category"
+                            link="/hostels"
                         />
 
                     </div>

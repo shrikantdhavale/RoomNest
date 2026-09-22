@@ -1,13 +1,18 @@
+import { Link } from "react-router-dom";
+
 function CategoryCard({
     icon,
     title,
     description,
     count,
-    className
+    className,
+    link
 }) {
-
     return (
-        <div className={`category-card ${className}`}>
+        <Link
+            to={link}
+            className={`category-card ${className}`}
+        >
 
             <div className="category-top">
 
@@ -21,6 +26,7 @@ function CategoryCard({
 
             </div>
 
+
             <div className="category-info">
 
                 <span className="category-count">
@@ -33,7 +39,7 @@ function CategoryCard({
 
             </div>
 
-        </div>
+        </Link>
     );
 }
 
