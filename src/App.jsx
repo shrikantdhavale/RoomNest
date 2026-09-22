@@ -20,6 +20,7 @@ import OwnerDashboard from "./pages/OwnerDashboard";
 import AddProperty from "./pages/AddProperty";
 import Account from "./pages/Account";
 import ListProperty from "./pages/ListProperty";
+import EditProperty from "./pages/EditProperty";
 
 
 
@@ -81,6 +82,10 @@ function App() {
                     path="/list-property"
                     element={<ListProperty />}
                 />
+                <Route
+    path="/edit-property/:id"
+    element={<EditProperty />}
+/>
 
             </Routes>
 
